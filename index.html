@@ -94,6 +94,26 @@ nav.topnav {
   white-space: nowrap;
 }
 .logo span { color: var(--blue); }
+.play-link {
+  margin-left: auto; text-decoration: none; font-weight: 700; font-size: .85rem;
+  color: var(--purple); background: var(--purple-l); padding: 5px 12px; border-radius: 100px;
+  white-space: nowrap;
+}
+.play-link:hover { filter: brightness(.95); }
+
+/* ── PLAY CTA ────────────────────────────────────── */
+.play-cta {
+  background: var(--purple); color: #fff; text-align: center;
+  padding: 56px max(16px,5vw);
+}
+.play-cta h2 { color: #fff; margin-bottom: 10px; }
+.play-cta p { color: rgba(255,255,255,.8); margin: 0 auto 24px; }
+.play-btn {
+  display: inline-block; background: #fff; color: var(--purple); text-decoration: none;
+  font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 1.1rem;
+  padding: 12px 28px; border-radius: 100px; transition: transform .2s;
+}
+.play-btn:hover { transform: translateY(-2px) scale(1.03); }
 
 .toggle-wrap {
   display: flex; background: var(--surface);
@@ -432,6 +452,7 @@ footer {
 <!-- ══════ NAV ══════ -->
 <nav class="topnav">
   <a class="logo" href="#">Damien <span>@CDC</span></a>
+  <a class="play-link" href="jeu.html">🎮 Jouer</a>
   <div class="toggle-wrap" role="group" aria-label="Mode d'explication">
     <button class="tbtn on" id="btn-ad" onclick="mode('ad')">👤 Adulte</button>
     <button class="tbtn"    id="btn-cm" onclick="mode('cm')">🧒 Enfant</button>
@@ -718,6 +739,20 @@ footer {
       <div class="ad"><strong style="color:#fff">Ce que fait Damien en une phrase :</strong><br>Il conçoit, construit et pilote l'infrastructure technique qui permet aux applications de la Caisse des Dépôts de fonctionner de façon fiable, sécurisée et évolutive — grâce à Kubernetes et à l'Infrastructure as Code.</div>
       <div class="ca"><strong style="color:#fff">Résumé pour les héros :</strong><br>Damien construit et surveille les maisons magiques (les conteneurs) où vivent toutes les applications de la grande banque de France. Grâce à lui et son équipe, elles marchent tout le temps — même quand des millions de gens s'en servent ! 🎉</div>
     </div>
+  </div>
+</section>
+
+<section class="play-cta" id="play">
+  <div class="inner">
+    <h2>
+      <span class="ad">Et si tu faisais le métier de Damien ?</span>
+      <span class="ca">À toi de jouer ! 🎮</span>
+    </h2>
+    <p>
+      <span class="ad">Un jeu en 5 missions : déploie des conteneurs, répare les pannes, absorbe un pic de trafic et survis à la perte d'un serveur.</span>
+      <span class="ca">Deviens le chef des boîtes magiques pendant une journée : 5 missions pour rendre tous les utilisateurs heureux !</span>
+    </p>
+    <a class="play-btn" href="jeu.html">Lancer Mission Kubernetes →</a>
   </div>
 </section>
 
