@@ -2,222 +2,111 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mission Kubernetes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Damien contre les Bugs</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800;900&family=Nunito:wght@400;600;700&display=swap');
 
 :root {
   --bg: #F8F8F4; --surface: #FFFFFF; --fg: #1B1B2F; --muted: #5C5C7A; --faint: #9A9AB0;
   --border: rgba(27,27,47,.1);
-  --blue: #3A6FF7; --blue-l: #EDF2FF; --yellow: #FFC300; --coral: #FF5C38; --coral-l: #FFF0ED;
-  --purple: #7B2FBE; --purple-l: #F4EDFF; --green: #1DB660; --green-l: #EDFFF4; --teal: #0FA3B1;
+  --blue: #3A6FF7; --yellow: #FFC300; --coral: #FF5C38; --purple: #7B2FBE; --purple-l: #F4EDFF;
+  --green: #1DB660; --teal: #0FA3B1;
   --r: 14px; --sh: 0 4px 20px rgba(27,27,47,.07);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0E0E1A; --surface: #17172A; --fg: #EDEDFF; --muted: #8888AA; --faint: #4A4A6A;
-    --border: rgba(237,237,255,.08); --blue-l: rgba(58,111,247,.18); --coral-l: rgba(255,92,56,.15);
-    --purple-l: rgba(123,47,190,.18); --green-l: rgba(29,182,96,.15);
+    --border: rgba(237,237,255,.08); --purple-l: rgba(123,47,190,.2);
   }
 }
 :root[data-theme="dark"] {
   --bg: #0E0E1A; --surface: #17172A; --fg: #EDEDFF; --muted: #8888AA; --faint: #4A4A6A;
-  --border: rgba(237,237,255,.08); --blue-l: rgba(58,111,247,.18); --coral-l: rgba(255,92,56,.15);
-  --purple-l: rgba(123,47,190,.18); --green-l: rgba(29,182,96,.15);
+  --border: rgba(237,237,255,.08); --purple-l: rgba(123,47,190,.2);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  background: var(--bg); color: var(--fg);
-  font-family: 'Nunito', system-ui, sans-serif;
-  font-size: 16px; line-height: 1.55; overflow-x: hidden;
-}
-h1,h2,h3 { font-family: 'Baloo 2', sans-serif; line-height: 1.15; text-wrap: balance; }
+body { background: var(--bg); color: var(--fg); font-family: 'Nunito', system-ui, sans-serif; font-size: 16px; line-height: 1.5; overflow-x: hidden; }
+h1,h2,h3 { font-family: 'Baloo 2', sans-serif; line-height: 1.1; text-wrap: balance; }
 button { font-family: inherit; }
 
-/* NAV */
 .topnav {
-  position: sticky; top: 0; z-index: 200; height: 56px;
+  position: sticky; top: 0; z-index: 200; height: 52px;
   background: var(--bg); border-bottom: 1px solid var(--border);
-  padding-inline: max(16px,4vw);
+  padding-inline: max(14px,4vw);
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
 }
 .logo { font-family: 'Baloo 2', sans-serif; font-weight: 800; color: var(--fg); text-decoration: none; white-space: nowrap; }
 .logo span { color: var(--purple); }
 .back { color: var(--muted); text-decoration: none; font-size: .85rem; font-weight: 700; white-space: nowrap; }
-@media (max-width: 520px) { .back-long { display: none; } }
 .back:hover { color: var(--purple); }
-.toggle-wrap { display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: 100px; padding: 3px; gap: 2px; }
-.tbtn { border: none; background: transparent; cursor: pointer; padding: 4px 12px; border-radius: 100px; font-size: .8rem; font-weight: 700; color: var(--muted); white-space: nowrap; }
-.tbtn.on { background: var(--purple); color: #fff; }
+.mute { border: 1px solid var(--border); background: var(--surface); border-radius: 100px; width: 38px; height: 34px; cursor: pointer; font-size: 1rem; }
 
-.ca { display: none; } .ad { display: block; }
-body.cm .ca { display: block; } body.cm .ad { display: none; }
-span.ca { display: none; } span.ad { display: inline; }
-body.cm span.ca { display: inline; } body.cm span.ad { display: none; }
-
-/* LAYOUT */
-.wrap { max-width: 960px; margin-inline: auto; padding: 28px max(16px,4vw) 60px; }
-.head { text-align: center; margin-bottom: 20px; }
-.head h1 { font-size: clamp(1.9rem,5vw,3rem); font-weight: 900; }
+.wrap { max-width: 900px; margin-inline: auto; padding: 16px max(12px,3vw) 40px; }
+.head { text-align: center; margin-bottom: 10px; }
+.head h1 { font-size: clamp(1.7rem,5vw,2.6rem); font-weight: 900; }
 .head h1 em { font-style: normal; color: var(--purple); }
-.head p { color: var(--muted); max-width: 60ch; margin: 8px auto 0; }
+.head p { color: var(--muted); font-size: .92rem; }
 
-/* HUD */
 .hud {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 10px;
-  background: var(--surface); border-radius: var(--r); padding: 14px 16px; box-shadow: var(--sh);
-  margin-bottom: 14px;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+  background: var(--surface); border-radius: var(--r); padding: 8px 12px; box-shadow: var(--sh);
+  margin-bottom: 8px;
 }
-.hud-item { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.hud-lbl { font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-.hud-val { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 1.15rem; font-variant-numeric: tabular-nums; }
-#hud-mission { font-size: 1rem; line-height: 1.2; }
-.bar { height: 10px; background: var(--border); border-radius: 100px; overflow: hidden; margin-top: 4px; }
-.bar > i { display: block; height: 100%; width: 100%; background: var(--green); border-radius: 100px; transition: width .2s, background .3s; }
-.bar > i.warn { background: var(--yellow); }
-.bar > i.bad  { background: var(--coral); }
+.hud-item { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.hud-lbl { font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.hud-val { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 1.25rem; font-variant-numeric: tabular-nums; line-height: 1.1; white-space: nowrap; }
+.hud-val.bump { animation: bump .25s ease; }
+@keyframes bump { 50% { transform: scale(1.35); color: var(--purple); } }
+#h-lives { letter-spacing: -2px; font-size: 1.05rem; }
 
-/* QUEUE */
-.queue-wrap {
-  background: var(--surface); border-radius: var(--r); padding: 10px 14px; box-shadow: var(--sh);
-  margin-bottom: 14px; display: flex; align-items: center; gap: 12px; min-height: 52px;
-}
-.queue-lbl { font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
-.queue { display: flex; gap: 4px; flex-wrap: wrap; font-size: 1.3rem; line-height: 1; }
-.queue span { animation: bob .8s ease-in-out infinite alternate; }
-@keyframes bob { from { transform: translateY(0) } to { transform: translateY(-3px) } }
-.queue-empty { color: var(--faint); font-size: .85rem; }
+.stage { position: relative; width: 100%; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,.25); background: #0F1630; touch-action: none; user-select: none; -webkit-user-select: none; }
+.stage canvas { display: block; width: 100%; cursor: crosshair; }
+.stage.shake { animation: shk .25s ease; }
+@keyframes shk { 25% { transform: translate(-5px,3px) } 50% { transform: translate(5px,-3px) } 75% { transform: translate(-3px,-2px) } }
 
-/* BOARD */
-.board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
-.node {
-  background: var(--surface); border-radius: var(--r); padding: 12px 10px;
-  border: 2px solid var(--border); box-shadow: var(--sh);
-  display: flex; flex-direction: column; gap: 8px; min-height: 210px;
-  transition: border-color .3s, opacity .3s;
-  position: relative;
+.overlay {
+  position: absolute; inset: 0; background: rgba(8,12,30,.78); backdrop-filter: blur(3px);
+  display: flex; align-items: center; justify-content: center; padding: 16px; color: #fff; text-align: center;
 }
-.node.down { border-color: var(--coral); border-style: dashed; opacity: .55; }
-.node.down::after {
-  content: '🔧 En panne'; position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Baloo 2', sans-serif; font-weight: 800; color: var(--coral); font-size: 1rem;
-  background: rgba(255,92,56,.08); border-radius: 12px;
+.overlay[hidden] { display: none; }
+.card { max-width: 440px; width: 100%; }
+.card h2 { font-size: clamp(1.6rem,5vw,2.4rem); margin-bottom: 8px; }
+.card h2 em { font-style: normal; color: #FFC300; }
+.card p { color: rgba(255,255,255,.8); margin-bottom: 12px; font-size: .95rem; }
+.howto { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin: 14px 0 18px; }
+.howto div { background: rgba(255,255,255,.08); border-radius: 12px; padding: 10px 6px; font-size: .78rem; font-weight: 700; line-height: 1.3; }
+.howto span { display: block; font-size: 1.8rem; margin-bottom: 4px; }
+.big {
+  border: none; border-radius: 100px; padding: 13px 32px; cursor: pointer;
+  font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 1.2rem;
+  background: #FFC300; color: #1B1B2F; box-shadow: 0 6px 0 #c99700; transition: transform .1s, box-shadow .1s;
 }
-.node-title { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: .95rem; display: flex; justify-content: space-between; align-items: center; }
-.node-cap { font-size: .7rem; color: var(--muted); font-weight: 700; }
-.slots { display: flex; flex-direction: column; gap: 6px; }
-.slot {
-  height: 46px; border: 2px dashed var(--border); border-radius: 9px;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--faint); font-size: .72rem; font-weight: 700;
-}
+.big:hover { transform: translateY(-2px); }
+.big:active { transform: translateY(4px); box-shadow: 0 2px 0 #c99700; }
+.score-final { font-family: 'Baloo 2', sans-serif; font-size: clamp(2.6rem,10vw,4.5rem); font-weight: 900; color: #FFC300; line-height: 1; margin: 6px 0; }
+.best { font-size: .85rem; color: rgba(255,255,255,.6); margin-bottom: 14px; }
+.job-note { background: rgba(255,195,0,.14); border-left: 3px solid #FFC300; border-radius: 10px; padding: 10px 12px; text-align: left; font-size: .85rem; margin-bottom: 16px; }
 
-/* PODS */
-.pod {
-  height: 46px; border-radius: 9px; padding: 0 10px;
-  display: flex; align-items: center; gap: 8px;
-  color: #fff; font-weight: 700; font-size: .8rem;
-  background: var(--blue); position: relative; overflow: hidden;
-  animation: pop .3s ease;
+.msg {
+  margin-top: 8px; background: var(--surface); border-radius: 10px; padding: 9px 14px; box-shadow: var(--sh);
+  font-size: .9rem; font-weight: 600; min-height: 42px; display: flex; align-items: center; gap: 8px;
 }
-.pod .dotp { width: 9px; height: 9px; border-radius: 50%; background: #B7FFCF; box-shadow: 0 0 0 3px rgba(255,255,255,.25); flex-shrink: 0; }
-.pod .pn { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pod.starting { background: var(--faint); animation: pulse 1s ease-in-out infinite; }
-.pod.starting .dotp { background: var(--yellow); }
-.pod.crashed { background: var(--coral); cursor: pointer; animation: shake .4s ease-in-out infinite; }
-.pod.crashed .dotp { background: #FFD3C8; }
-.pod.crashed::after { content: 'Clique !'; font-size: .68rem; background: rgba(0,0,0,.25); padding: 2px 7px; border-radius: 100px; }
-.pod.crashed:hover { filter: brightness(1.1); }
-@keyframes pop   { from { transform: scale(.6); opacity: 0 } to { transform: none; opacity: 1 } }
-@keyframes pulse { 0%,100% { opacity: .75 } 50% { opacity: 1 } }
-@keyframes shake { 0%,100% { transform: translateX(0) } 25% { transform: translateX(-2px) rotate(-1deg) } 75% { transform: translateX(2px) rotate(1deg) } }
+.msg strong { color: var(--purple); }
+.powers { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; min-height: 0; }
+.pw { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 100px; font-size: .8rem; font-weight: 700; color: #fff; }
+.pw i { display: inline-block; width: 60px; height: 6px; background: rgba(255,255,255,.3); border-radius: 100px; overflow: hidden; }
+.pw i b { display: block; height: 100%; background: #fff; }
 
-/* CONTROLS */
-.controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
-.btn {
-  border: none; border-radius: 100px; padding: 11px 20px;
-  font-weight: 700; font-size: .9rem; cursor: pointer; transition: transform .15s, opacity .15s;
-  display: inline-flex; align-items: center; gap: 6px;
-}
-.btn:hover:not(:disabled) { transform: translateY(-1px); }
-.btn:disabled { opacity: .45; cursor: not-allowed; }
-.btn[hidden] { display: none; }
-.btn-p { background: var(--purple); color: #fff; }
-.btn-g { background: var(--green); color: #fff; }
-.btn-o { background: var(--surface); color: var(--fg); border: 2px solid var(--border); }
-.badge { background: rgba(255,255,255,.25); padding: 1px 8px; border-radius: 100px; font-size: .75rem; }
-.autoheal-tag {
-  display: none; align-items: center; gap: 6px;
-  background: var(--green-l); color: var(--green); border-radius: 100px;
-  padding: 8px 14px; font-size: .82rem; font-weight: 700;
-}
-.autoheal-tag.on { display: inline-flex; }
-
-.log {
-  background: var(--surface); border-radius: 10px; padding: 10px 14px;
-  font-size: .85rem; color: var(--muted); min-height: 42px; box-shadow: var(--sh);
-  display: flex; align-items: center; gap: 8px;
-}
-.log strong { color: var(--fg); }
-
-/* MISSION LIST */
-.missions { display: flex; gap: 6px; justify-content: center; margin-bottom: 18px; flex-wrap: wrap; }
-.mstep {
-  width: 34px; height: 34px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: .9rem;
-  background: var(--surface); border: 2px solid var(--border); color: var(--faint);
-}
-.mstep.done { background: var(--green); border-color: var(--green); color: #fff; }
-.mstep.cur  { background: var(--purple); border-color: var(--purple); color: #fff; transform: scale(1.15); }
-
-/* MODAL */
-.modal-bg {
-  position: fixed; inset: 0; background: rgba(10,10,25,.55); z-index: 300;
-  display: none; align-items: center; justify-content: center; padding: 16px;
-  backdrop-filter: blur(3px);
-}
-.modal-bg.open { display: flex; }
-.modal {
-  background: var(--surface); border-radius: 20px; padding: 28px 26px;
-  max-width: 520px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,.3);
-  animation: pop .3s ease; max-height: 90vh; overflow-y: auto;
-}
-.modal .kicker { font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--purple); margin-bottom: 6px; }
-.modal h2 { font-size: 1.7rem; margin-bottom: 12px; }
-.modal p { color: var(--muted); margin-bottom: 12px; }
-.modal .goal {
-  background: var(--purple-l); color: var(--purple); border-radius: 10px;
-  padding: 10px 14px; font-weight: 700; margin: 14px 0; font-size: .9rem;
-}
-.modal .learn {
-  background: var(--green-l); border-left: 4px solid var(--green); border-radius: 10px;
-  padding: 12px 14px; margin: 14px 0; font-size: .9rem;
-}
-.modal .learn b { color: var(--green); display: block; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px; }
-.modal .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
-.modal.fail .kicker { color: var(--coral); }
-.modal.fail .goal { background: var(--coral-l); color: var(--coral); }
-
-.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 250; overflow: hidden; }
-.confetti i {
-  position: absolute; top: -10px; width: 9px; height: 14px; border-radius: 2px;
-  animation: fall linear forwards;
-}
-@keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: .6 } }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 14px; font-size: .78rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 4px; }
 
 @media (max-width: 520px) {
-  .board { gap: 6px; }
-  .node { padding: 8px 6px; min-height: 190px; }
-  .node-title { font-size: .8rem; }
-  .pod { font-size: .7rem; padding: 0 6px; gap: 5px; }
-  .pod.crashed::after { display: none; }
-  .btn { padding: 10px 14px; font-size: .82rem; }
+  .hud-val { font-size: 1.05rem; }
+  .howto div { font-size: .72rem; }
+  .back-long { display: none; }
 }
-@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { .stage.shake, .hud-val.bump { animation: none; } }
 </style>
 </head>
 <body>
@@ -225,418 +114,577 @@ body.cm span.ca { display: inline; } body.cm span.ad { display: none; }
 <nav class="topnav">
   <a class="logo" href="index.html">Damien <span>@CDC</span></a>
   <a class="back" href="index.html">← <span class="back-long">Retour au </span>site</a>
-  <div class="toggle-wrap" role="group" aria-label="Mode d'explication">
-    <button class="tbtn on" id="btn-ad" onclick="mode('ad')">👤 Adulte</button>
-    <button class="tbtn"    id="btn-cm" onclick="mode('cm')">🧒 Enfant</button>
-  </div>
+  <button class="mute" id="mute" title="Son" aria-label="Activer ou couper le son">🔊</button>
 </nav>
 
 <main class="wrap">
   <div class="head">
-    <h1>Mission <em>Kubernetes</em></h1>
-    <p>
-      <span class="ad">Mets-toi dans la peau de Damien : garde les applications de la Caisse des Dépôts en vie pendant une journée mouvementée.</span>
-      <span class="ca">Aujourd'hui, c'est toi qui fais le métier de Damien ! Garde toutes les applis en vie et rends les utilisateurs heureux. 💪</span>
-    </p>
+    <h1>Damien <em>contre les Bugs</em></h1>
+    <p>Écrase les bugs, répare les boîtes, rends les utilisateurs heureux !</p>
   </div>
-
-  <div class="missions" id="missions"></div>
 
   <div class="hud">
-    <div class="hud-item">
-      <span class="hud-lbl">Mission</span>
-      <span class="hud-val" id="hud-mission">—</span>
+    <div class="hud-item"><span class="hud-lbl">Score</span><span class="hud-val" id="h-score">0</span></div>
+    <div class="hud-item"><span class="hud-lbl">Vague</span><span class="hud-val" id="h-wave">1</span></div>
+    <div class="hud-item"><span class="hud-lbl">Combo</span><span class="hud-val" id="h-combo">×1</span></div>
+    <div class="hud-item"><span class="hud-lbl">Vies</span><span class="hud-val" id="h-lives">❤️❤️❤️❤️❤️</span></div>
+  </div>
+
+  <div class="stage" id="stage">
+    <canvas id="cv" aria-label="Zone de jeu"></canvas>
+    <div class="overlay" id="ov-start">
+      <div class="card">
+        <h2>Prêt à défendre <em>les boîtes</em> ?</h2>
+        <p>Les boîtes, ce sont les applications de la Caisse des Dépôts. Les bugs veulent les casser. Toi, tu es Damien.</p>
+        <div class="howto">
+          <div><span>🐛</span>Tape sur les bugs pour les écraser</div>
+          <div><span>💥</span>Tape sur une boîte cassée pour la relancer</div>
+          <div><span>🎁</span>Attrape les bonus qui flottent</div>
+        </div>
+        <button class="big" id="btn-start">C'est parti !</button>
+      </div>
     </div>
-    <div class="hud-item">
-      <span class="hud-lbl">❤️ Satisfaction</span>
-      <div class="bar"><i id="sat-bar"></i></div>
-    </div>
-    <div class="hud-item">
-      <span class="hud-lbl">👥 Utilisateurs servis</span>
-      <span class="hud-val" id="hud-served">0 / 0</span>
-    </div>
-    <div class="hud-item">
-      <span class="hud-lbl">💰 Budget</span>
-      <span class="hud-val" id="hud-coins">0</span>
+    <div class="overlay" id="ov-over" hidden>
+      <div class="card">
+        <h2 id="over-title">Fin de la journée !</h2>
+        <div class="score-final" id="over-score">0</div>
+        <div class="best" id="over-best"></div>
+        <p id="over-text"></p>
+        <div class="job-note" id="over-note"></div>
+        <button class="big" id="btn-again">Rejouer</button>
+      </div>
     </div>
   </div>
 
-  <div class="queue-wrap">
-    <span class="queue-lbl">File d'attente</span>
-    <div class="queue" id="queue"><span class="queue-empty">Personne n'attend 👌</span></div>
+  <div class="msg" id="msg">👷 <span><strong>Damien :</strong> Tape sur « C'est parti » quand tu es prêt !</span></div>
+  <div class="powers" id="powers"></div>
+
+  <div class="legend">
+    <span>🤖 Robot Kubernetes : répare tout seul</span>
+    <span>📜 Recette IaC : relance toutes les boîtes</span>
+    <span>🛡️ Bouclier : les bugs rebondissent</span>
   </div>
-
-  <div class="board" id="board"></div>
-
-  <div class="controls">
-    <button class="btn btn-p" id="btn-deploy" onclick="deploy()">➕ Déployer une appli <span class="badge">10 💰</span></button>
-    <button class="btn btn-g" id="btn-scale" onclick="scaleIaC()" hidden>📜 Recette IaC : ×3 <span class="badge">24 💰</span></button>
-    <span class="autoheal-tag" id="autoheal-tag">🤖 Auto-réparation activée</span>
-  </div>
-
-  <div class="log" id="log">Prépare-toi…</div>
 </main>
 
-<div class="modal-bg" id="modal-bg">
-  <div class="modal" id="modal"></div>
-</div>
-<div class="confetti" id="confetti"></div>
-
 <script>
-/* ── MODE ─────────────────────────────────────────── */
-function mode(m) {
-  document.body.classList.toggle('cm', m === 'cm');
-  document.getElementById('btn-ad').classList.toggle('on', m !== 'cm');
-  document.getElementById('btn-cm').classList.toggle('on', m === 'cm');
-  try { localStorage.setItem('mode', m); } catch(e){}
-}
-try { const s = localStorage.getItem('mode'); if (s) mode(s); } catch(e){}
-const isChild = () => document.body.classList.contains('cm');
+/* ═══════════════ SETUP ═══════════════ */
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const stage = document.getElementById('stage');
+const $ = id => document.getElementById(id);
+let W = 800, H = 520, COLS = 4, ROWS = 3, dpr = 1;
+const LANE = 72, TOP = 40, PAD = 14;
+let cellW, cellH, boxW, boxH;
+const BOX_COLORS = ['#3A6FF7', '#7B2FBE', '#FF5C38', '#0FA3B1'];
+const SERVER_NAMES = ['Serveur A', 'Serveur B', 'Serveur C', 'Serveur D'];
+const WAVE_DUR = 22;
 
-/* ── CONFIG ───────────────────────────────────────── */
-const NODES = ['Serveur A', 'Serveur B', 'Serveur C'];
-const SLOTS = 3;
-const POD_RATE = 1.2;          // users served per second per running pod
-const DEPLOY_COST = 10;
-const SCALE_COST = 24;
-const COIN_PER_USER = 0.6;
-const APP_NAMES = ['banque', 'virement', 'compte', 'épargne', 'auth', 'prêt', 'portail', 'mobile', 'agence'];
-
-const MISSIONS = [
-  {
-    title: 'Premier déploiement', goal: 20, rate: 1.4, crash: 0,
-    intro: {
-      ad: 'Les premiers utilisateurs arrivent sur l\'application de la Caisse des Dépôts. Sans conteneur pour les servir, ils attendent… et s\'énervent. Déploie des applis sur les serveurs pour absorber le trafic.',
-      ca: 'Des gens arrivent pour utiliser l\'appli, mais il n\'y a encore personne pour s\'occuper d\'eux ! Clique sur « Déployer une appli » pour mettre une boîte magique sur un serveur. Chaque boîte sert des utilisateurs.'
-    },
-    learn: {
-      ad: 'Chaque appli tourne dans un <strong>conteneur</strong> : une boîte standard, identique partout, qui démarre en quelques secondes. Kubernetes choisit automatiquement sur quel serveur la poser.',
-      ca: 'Chaque appli vit dans une <strong>boîte magique</strong> (un conteneur). Elle marche pareil sur n\'importe quel serveur, et Kubernetes choisit tout seul où la ranger !'
-    }
-  },
-  {
-    title: 'Panne !', goal: 45, rate: 2.2, crash: 0.0035,
-    intro: {
-      ad: 'Ça se complique : les applications plantent de temps en temps (bug, mémoire pleine…). Un conteneur en panne ne sert plus personne. Clique dessus pour le redémarrer avant que la file d\'attente n\'explose.',
-      ca: 'Oh non, parfois une boîte tombe en panne et devient rouge 🔥 ! Elle ne sert plus personne. Clique vite dessus pour la réparer !'
-    },
-    learn: {
-      ad: 'Réparer à la main, ça marche… mais pas à 3h du matin avec 500 conteneurs. C\'est exactement le problème que Damien a résolu en automatisant.',
-      ca: 'Réparer à la main, c\'est fatigant ! Imagine 500 boîtes qui tombent en panne la nuit… Damien a trouvé une astuce pour ne plus avoir à le faire.'
-    }
-  },
-  {
-    title: 'Auto-réparation', goal: 70, rate: 2.8, crash: 0.005, unlock: 'autoheal',
-    intro: {
-      ad: 'Damien active l\'auto-réparation de Kubernetes : chaque conteneur en panne est détecté et redémarré <em>tout seul</em>. Regarde-le travailler — mais garde assez de capacité pour la file d\'attente !',
-      ca: 'Bonne nouvelle : Kubernetes sait réparer les boîtes tout seul maintenant ! 🤖 Regarde-le faire. Toi, tu dois juste vérifier qu\'il y a assez de boîtes pour tout le monde.'
-    },
-    learn: {
-      ad: 'C\'est le <strong>self-healing</strong> : Kubernetes surveille l\'état souhaité (« 5 conteneurs en vie ») et corrige tout écart automatiquement. Damien n\'a plus à se réveiller la nuit.',
-      ca: 'Kubernetes est comme un robot gardien : il compte les boîtes en permanence et remplace celles qui cassent. Damien peut dormir tranquille ! 😴'
-    }
-  },
-  {
-    title: 'Pic de trafic', goal: 110, rate: 2.5, crash: 0.004, unlock: 'scale', spike: { at: 6, rate: 7.5, duration: 14 },
-    intro: {
-      ad: 'Alerte : le journal télévisé vient de parler d\'un nouveau service de la Caisse des Dépôts. Dans quelques secondes, le trafic va tripler. Damien débloque la <strong>recette IaC</strong> : un fichier qui déploie 3 conteneurs d\'un coup.',
-      ca: 'Attention ! Plein de monde va arriver d\'un coup, comme à la récré 🏃. Damien a écrit une recette magique : un seul clic et 3 boîtes apparaissent en même temps !'
-    },
-    learn: {
-      ad: 'Avec l\'<strong>Infrastructure as Code</strong>, on décrit ce qu\'on veut (« 9 réplicas ») dans un fichier, et l\'infrastructure se construit toute seule. Reproductible, versionnable, sans clic manuel.',
-      ca: 'La recette magique, c\'est l\'<strong>Infrastructure as Code</strong> : Damien écrit ce qu\'il veut dans un fichier, et l\'ordinateur construit tout tout seul, aussi souvent qu\'on veut !'
-    }
-  },
-  {
-    title: 'Serveur en panne', goal: 140, rate: 4, crash: 0.004, nodeFail: { at: 7, node: 1, duration: 16 },
-    intro: {
-      ad: 'Dernier défi : un serveur entier va tomber (panne électrique). Tous ses conteneurs disparaissent d\'un coup. Kubernetes va les recréer sur les serveurs restants — à condition qu\'il y ait de la place. Anticipe !',
-      ca: 'Le plus dur : un serveur entier va s\'éteindre ⚡ ! Toutes ses boîtes disparaissent. Kubernetes va en refaire sur les autres serveurs… s\'il reste de la place. Prépare-toi !'
-    },
-    learn: {
-      ad: 'C\'est la <strong>résilience</strong> : les applications ne dépendent d\'aucun serveur en particulier. Un cluster Kubernetes bien conçu survit à la perte d\'une machine sans que l\'utilisateur ne s\'en rende compte.',
-      ca: 'Les boîtes ne sont attachées à aucun serveur : si l\'un s\'éteint, elles renaissent ailleurs. Les utilisateurs ne remarquent même rien !'
-    }
-  }
+const FACTS = [
+  '« Kubernetes » veut dire « pilote de navire » en grec ancien. 🚢',
+  'Un conteneur démarre en quelques secondes. Un vrai serveur met des minutes !',
+  'La nuit, c\'est le robot Kubernetes qui répare les boîtes. Damien peut dormir. 😴',
+  'Le tout premier « bug » de 1947 était un vrai papillon coincé dans un ordinateur ! 🦋',
+  'Damien écrit des recettes (IaC) pour construire des centaines de serveurs sans cliquer.',
+  'L\'équipe de Damien : 5 personnes pour des milliers de boîtes.',
+  'Un pic de trafic, c\'est comme la récré : tout le monde arrive en même temps !',
+  'À la Caisse des Dépôts, les applis aident les villes, les écoles et les hôpitaux.',
+  'Si un serveur s\'éteint, Kubernetes recrée les boîtes ailleurs. Personne ne le voit !',
 ];
 
-/* ── STATE ────────────────────────────────────────── */
-const S = {
-  mission: 0, running: false, t: 0,
-  sat: 100, served: 0, coins: 30, queue: 0,
-  pods: [], podSeq: 0,
-  autoheal: false, scaleUnlocked: false,
-  nodeDown: -1, spikeOn: false, timer: null
+/* ═══════════════ STATE ═══════════════ */
+const G = {};
+function reset() {
+  Object.assign(G, {
+    running: false, over: false, t: 0, score: 0, wave: 0, combo: 1, comboT: 0, lives: 5,
+    waveT: 0, between: 0, bugT: 1.5, userT: 0.5, puT: 9,
+    boxes: [], bugs: [], users: [], parts: [], floats: [], pus: [],
+    robotT: 0, shieldT: 0, spikeT: 0, fail: null, banner: null,
+    served: 0, squashed: 0, hintBug: true, hintCrash: true, robotZap: 0,
+  });
+  initBoxes();
+}
+function initBoxes() {
+  G.boxes = [];
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++)
+    G.boxes.push({ c, r, state: 'ok', color: BOX_COLORS[c % BOX_COLORS.length], t: 0, blink: Math.random() * 4 });
+}
+function boxCenter(b) { return { x: PAD + cellW * (b.c + 0.5), y: TOP + cellH * (b.r + 0.5) }; }
+
+function resize() {
+  const cw = stage.clientWidth;
+  const portrait = cw < 560;
+  const nW = portrait ? 480 : 800, nH = portrait ? 600 : 520;
+  const nCols = portrait ? 3 : 4, nRows = portrait ? 4 : 3;
+  const gridChanged = nCols !== COLS || nRows !== ROWS;
+  W = nW; H = nH; COLS = nCols; ROWS = nRows;
+  dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = W * dpr; cv.height = H * dpr;
+  cv.style.height = (cw * H / W) + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  cellW = (W - PAD * 2) / COLS; cellH = (H - LANE - TOP - PAD) / ROWS;
+  boxW = cellW * 0.7; boxH = Math.min(cellH * 0.58, boxW * 0.78);
+  if (gridChanged && G.boxes) { initBoxes(); G.bugs = []; G.fail = null; }
+}
+
+/* ═══════════════ SOUND ═══════════════ */
+let AC = null, muted = false;
+try { muted = localStorage.getItem('mute') === '1'; } catch (e) {}
+$('mute').textContent = muted ? '🔇' : '🔊';
+$('mute').onclick = () => { muted = !muted; $('mute').textContent = muted ? '🔇' : '🔊'; try { localStorage.setItem('mute', muted ? '1' : '0'); } catch (e) {} };
+function ac() { if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} } if (AC && AC.state === 'suspended') AC.resume(); return AC; }
+function tone(f, dur, type = 'sine', vol = .12, slideTo, delay = 0) {
+  const a = ac(); if (!a || muted) return;
+  const o = a.createOscillator(), g = a.createGain();
+  o.type = type; o.frequency.setValueAtTime(f, a.currentTime + delay);
+  if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, a.currentTime + delay + dur);
+  g.gain.setValueAtTime(vol, a.currentTime + delay);
+  g.gain.exponentialRampToValueAtTime(.001, a.currentTime + delay + dur);
+  o.connect(g); g.connect(a.destination); o.start(a.currentTime + delay); o.stop(a.currentTime + delay + dur + .02);
+}
+function noise(dur, vol = .18) {
+  const a = ac(); if (!a || muted) return;
+  const n = a.sampleRate * dur, buf = a.createBuffer(1, n, a.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+  const s = a.createBufferSource(), g = a.createGain(); s.buffer = buf; g.gain.value = vol;
+  s.connect(g); g.connect(a.destination); s.start();
+}
+const sfx = {
+  squash: () => { tone(260, .12, 'square', .1, 70); noise(.06, .08); },
+  pop: () => tone(700, .09, 'sine', .1, 1300),
+  deploy: () => { tone(400, .1, 'triangle', .1, 800); tone(800, .12, 'triangle', .08, 1200, .1); },
+  crash: () => { noise(.25, .2); tone(160, .3, 'sawtooth', .1, 40); },
+  heart: () => { tone(330, .18, 'sawtooth', .1, 200); tone(200, .25, 'sawtooth', .1, 120, .15); },
+  wave: () => [523, 659, 784, 1046].forEach((f, i) => tone(f, .18, 'triangle', .1, null, i * .09)),
+  power: () => [660, 880, 1100].forEach((f, i) => tone(f, .1, 'sine', .1, null, i * .06)),
+  over: () => [440, 370, 311, 220].forEach((f, i) => tone(f, .3, 'triangle', .1, null, i * .2)),
+  boing: () => tone(500, .15, 'sine', .08, 250),
 };
 
-/* ── RENDER ───────────────────────────────────────── */
-const $ = id => document.getElementById(id);
+/* ═══════════════ HELPERS ═══════════════ */
+function say(html) { $('msg').innerHTML = '👷 <span><strong>Damien :</strong> ' + html + '</span>'; }
+function bumpHud(id) { const el = $(id); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
+function addScore(n) { G.score += n; $('h-score').textContent = G.score; bumpHud('h-score'); }
+function floatText(x, y, text, col = '#fff', size = 20) { G.floats.push({ x, y, text, col, size, life: 1 }); }
+function burst(x, y, col, n = 14, spd = 220) {
+  for (let i = 0; i < n; i++) { const a = Math.random() * Math.PI * 2, v = spd * (0.4 + Math.random() * 0.8);
+    G.parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 60, life: .6 + Math.random() * .5, col, size: 4 + Math.random() * 5 }); }
+}
+function shake() { stage.classList.remove('shake'); void stage.offsetWidth; stage.classList.add('shake'); }
+function bugInterval() { return Math.max(.5, 2.3 - G.wave * .2); }
+function landTime() { return Math.max(1.6, 4.4 - G.wave * .28); }
+function userInterval() { const base = Math.max(.32, 1.15 - G.wave * .09); return G.spikeT > 0 ? base / 3 : base; }
+function okRatio() { const ok = G.boxes.filter(b => b.state === 'ok').length; return ok / G.boxes.length; }
 
-function renderMissions() {
-  $('missions').innerHTML = MISSIONS.map((m, i) =>
-    `<div class="mstep ${i < S.mission ? 'done' : i === S.mission ? 'cur' : ''}" title="${m.title}">${i < S.mission ? '✓' : i + 1}</div>`
-  ).join('');
+function loseLife() {
+  G.lives--; $('h-lives').textContent = '❤️'.repeat(Math.max(0, G.lives)) + '🖤'.repeat(5 - Math.max(0, G.lives)); bumpHud('h-lives');
+  sfx.heart(); shake();
+  if (G.lives <= 0) gameOver();
 }
 
-function renderBoard() {
-  $('board').innerHTML = NODES.map((n, ni) => {
-    const pods = S.pods.filter(p => p.node === ni);
-    const slots = pods.map(p => `
-      <div class="pod ${p.state}" data-id="${p.id}" onclick="repair(${p.id})" title="${p.state === 'crashed' ? 'Clique pour réparer' : p.state === 'starting' ? 'Démarrage…' : 'En marche'}">
-        <span class="dotp"></span><span class="pn">${p.state === 'crashed' ? '🔥 ' : ''}${p.name}</span>
-      </div>`);
-    for (let i = pods.length; i < SLOTS; i++) slots.push('<div class="slot">libre</div>');
-    return `<div class="node ${S.nodeDown === ni ? 'down' : ''}">
-      <div class="node-title"><span>🖥️ ${n}</span><span class="node-cap">${pods.length}/${SLOTS}</span></div>
-      <div class="slots">${slots.join('')}</div>
-    </div>`;
-  }).join('');
+/* ═══════════════ GAME FLOW ═══════════════ */
+function start() {
+  reset(); resize();
+  G.running = true;
+  $('ov-start').hidden = true; $('ov-over').hidden = true;
+  $('h-score').textContent = 0; $('h-combo').textContent = '×1'; $('h-lives').textContent = '❤️❤️❤️❤️❤️';
+  ac();
+  startWave();
+}
+function startWave() {
+  G.wave++; G.waveT = 0; G.between = 0; G.bugT = 1.2;
+  $('h-wave').textContent = G.wave; bumpHud('h-wave');
+  G.banner = { text: 'Vague ' + G.wave, sub: G.wave === 1 ? 'Écrase les bugs !' : G.wave % 2 === 0 ? 'Ça accélère !' : 'Tiens bon !', life: 2 };
+  say(G.wave === 1 ? 'Les premiers bugs arrivent. <strong>Tape dessus</strong> dès qu\'ils se posent !' : 'Vague ' + G.wave + ' ! Les bugs sont plus rapides.');
+  sfx.wave();
+  G.eventDone = false;
+}
+function endWave() {
+  addScore(100); floatText(W / 2, H / 2 - 40, '+100 Vague terminée !', '#FFC300', 26);
+  G.between = 4; G.spikeT = 0;
+  const fact = FACTS[(G.wave - 1) % FACTS.length];
+  G.banner = { text: 'Bravo ! 🎉', sub: fact, life: 4 };
+  say('Le savais-tu ? ' + fact);
+  sfx.wave();
+  for (let i = 0; i < 30; i++) burst(Math.random() * W, Math.random() * (H - LANE), ['#FFC300', '#3A6FF7', '#FF5C38', '#1DB660', '#7B2FBE'][i % 5], 1, 120);
+}
+function gameOver() {
+  G.running = false; G.over = true; sfx.over();
+  let best = 0; try { best = +localStorage.getItem('best') || 0; if (G.score > best) { best = G.score; localStorage.setItem('best', best); } } catch (e) {}
+  $('over-score').textContent = G.score;
+  $('over-best').textContent = (G.score >= best && G.score > 0 ? '🏆 Nouveau record !' : 'Record : ' + best);
+  $('over-text').textContent = `Tu as tenu ${G.wave} vague${G.wave > 1 ? 's' : ''}, écrasé ${G.squashed} bugs et servi ${G.served} utilisateurs.`;
+  $('over-note').innerHTML = G.wave >= 6
+    ? '👷 <strong>Damien :</strong> Impressionnant ! Tu ferais un super collègue. Dans la vraie vie, le robot Kubernetes fait 90 % de ce boulot tout seul — c\'est Damien qui l\'a construit.'
+    : G.wave >= 3
+    ? '👷 <strong>Damien :</strong> Pas mal ! Tu vois pourquoi j\'ai construit un robot (Kubernetes) qui écrase les bugs et relance les boîtes tout seul ? Sans lui, on ne dormirait jamais.'
+    : '👷 <strong>Damien :</strong> Ça va vite, hein ? C\'est exactement pour ça que mon métier existe : construire des robots qui font ça à ma place, jour et nuit.';
+  $('ov-over').hidden = false;
 }
 
-function renderHud() {
-  const m = MISSIONS[S.mission];
-  $('hud-mission').textContent = `${S.mission + 1}/5 · ${m.title}`;
-  $('hud-served').textContent = `${Math.floor(S.served)} / ${m.goal}`;
-  $('hud-coins').textContent = Math.floor(S.coins);
-  const bar = $('sat-bar');
-  bar.style.width = Math.max(0, S.sat) + '%';
-  bar.className = S.sat < 30 ? 'bad' : S.sat < 60 ? 'warn' : '';
-  $('btn-deploy').disabled = !S.running || S.coins < DEPLOY_COST || freeSlots() === 0;
-  $('btn-scale').hidden = !S.scaleUnlocked;
-  $('btn-scale').disabled = !S.running || S.coins < SCALE_COST || freeSlots() === 0;
-  $('autoheal-tag').classList.toggle('on', S.autoheal);
+/* ═══════════════ SPAWNS ═══════════════ */
+function spawnBug() {
+  const targets = G.boxes.filter(b => b.state === 'ok' && !G.bugs.some(g => g.box === b));
+  if (!targets.length) return;
+  const box = targets[Math.floor(Math.random() * targets.length)];
+  const side = Math.floor(Math.random() * 3);
+  const sx = side === 0 ? -30 : side === 1 ? W + 30 : Math.random() * W;
+  const sy = side === 2 ? -30 : Math.random() * (H - LANE);
+  const { x, y } = boxCenter(box);
+  G.bugs.push({ box, sx, sy, x: sx, y: sy, tx: x, ty: y - boxH / 2 - 10, t: 0, dur: 1.1 + Math.random() * .4, state: 'fly', land: 0, wig: Math.random() * 10 });
+}
+function spawnUser() {
+  const skins = ['#F9D5B5', '#E8B894', '#C68B5A', '#8D5A3B', '#5C3A21'];
+  const shirts = ['#3A6FF7', '#FF5C38', '#1DB660', '#FFC300', '#7B2FBE', '#0FA3B1'];
+  G.users.push({ x: -20, y: H - LANE / 2 + (Math.random() * 16 - 8), v: 55 + Math.random() * 30 + G.wave * 4, skin: skins[Math.floor(Math.random() * 5)], shirt: shirts[Math.floor(Math.random() * 6)], bob: Math.random() * 6, mood: 'walk' });
+}
+function spawnPU() {
+  const types = ['robot', 'iac', 'shield'];
+  const type = types[Math.floor(Math.random() * 3)];
+  const fromLeft = Math.random() < .5;
+  G.pus.push({ type, x: fromLeft ? -30 : W + 30, y: TOP + 30 + Math.random() * (H - LANE - TOP - 80), vx: (fromLeft ? 1 : -1) * (50 + Math.random() * 30), vy: 0, life: 9, ph: Math.random() * 6 });
 }
 
-function renderQueue() {
-  const n = Math.min(14, Math.round(S.queue));
-  const q = $('queue');
-  if (n === 0) { q.innerHTML = '<span class="queue-empty">Personne n\'attend 👌</span>'; return; }
-  const face = n > 9 ? '😡' : n > 5 ? '😠' : n > 2 ? '😐' : '🙂';
-  q.innerHTML = Array.from({ length: n }, (_, i) => `<span style="animation-delay:${(i * 0.07) % 0.8}s">${face}</span>`).join('') + (S.queue > 14 ? `<span style="font-size:.85rem;color:var(--coral);font-weight:700;animation:none">+${Math.round(S.queue - 14)}</span>` : '');
+/* ═══════════════ ACTIONS ═══════════════ */
+function squash(bug, byRobot) {
+  const i = G.bugs.indexOf(bug); if (i < 0) return;
+  G.bugs.splice(i, 1);
+  if (bug.box) bug.box.state = bug.box.state === 'bug' ? 'ok' : bug.box.state;
+  G.squashed++;
+  if (!byRobot) { G.combo = Math.min(5, G.combo + 1); G.comboT = 2.5; $('h-combo').textContent = '×' + G.combo; bumpHud('h-combo'); }
+  const pts = byRobot ? 5 : 10 * G.combo;
+  addScore(pts);
+  burst(bug.x, bug.y, '#7CD600', 16);
+  floatText(bug.x, bug.y - 20, '+' + pts + (G.combo > 1 && !byRobot ? ' ×' + G.combo : ''), byRobot ? '#9AE6FF' : '#fff');
+  sfx.squash();
+  if (G.hintBug) { G.hintBug = false; say('Bien joué ! Un bug écrasé, la boîte est sauvée. <strong>Enchaîne-les pour un combo !</strong>'); }
 }
-
-function log(html) { $('log').innerHTML = html; }
-
-/* ── HELPERS ──────────────────────────────────────── */
-function freeSlots() {
-  return NODES.reduce((acc, _, ni) => S.nodeDown === ni ? acc : acc + (SLOTS - S.pods.filter(p => p.node === ni).length), 0);
+function crashBox(box) {
+  box.state = 'crashed'; box.t = 0;
+  const { x, y } = boxCenter(box);
+  burst(x, y, '#FF5C38', 24, 260); burst(x, y, '#444', 10, 120);
+  sfx.crash(); shake();
+  floatText(x, y - 30, '💥 Cassée !', '#FF5C38', 20);
+  if (G.hintCrash) { G.hintCrash = false; say('Oups, une boîte cassée ! <strong>Tape dessus pour la relancer</strong> — c\'est un conteneur, il redémarre en 1 seconde.'); }
 }
-function pickNode() {
-  let best = -1, bestCount = Infinity;
-  NODES.forEach((_, ni) => {
-    if (S.nodeDown === ni) return;
-    const c = S.pods.filter(p => p.node === ni).length;
-    if (c < SLOTS && c < bestCount) { best = ni; bestCount = c; }
-  });
-  return best;
+function deployBox(box, byRobot) {
+  if (box.state !== 'crashed') return;
+  box.state = 'deploying'; box.t = 0; box.dur = byRobot ? .5 : 1;
+  sfx.deploy();
+  const { x, y } = boxCenter(box);
+  floatText(x, y - 30, byRobot ? '🤖 relancée' : 'Déploiement…', '#9AE6FF', 15);
 }
-function addPod(node) {
-  const id = ++S.podSeq;
-  const pod = { id, node, name: APP_NAMES[id % APP_NAMES.length] + '-' + id, state: 'starting' };
-  S.pods.push(pod);
-  setTimeout(() => { if (pod.state === 'starting') { pod.state = 'running'; renderBoard(); } }, 1800);
-  return pod;
-}
-
-/* ── ACTIONS ──────────────────────────────────────── */
-function deploy() {
-  if (!S.running || S.coins < DEPLOY_COST) return;
-  const node = pickNode();
-  if (node < 0) { log('⚠️ Plus de place sur les serveurs !'); return; }
-  S.coins -= DEPLOY_COST;
-  const p = addPod(node);
-  log(`🚀 <strong>${p.name}</strong> déployé sur ${NODES[node]}. Démarrage…`);
-  renderBoard(); renderHud();
-}
-
-function scaleIaC() {
-  if (!S.running || S.coins < SCALE_COST) return;
-  S.coins -= SCALE_COST;
-  let n = 0;
-  for (let i = 0; i < 3; i++) { const node = pickNode(); if (node < 0) break; addPod(node); n++; }
-  log(`📜 Recette appliquée : <strong>replicas: +${n}</strong> — Kubernetes répartit les conteneurs tout seul.`);
-  renderBoard(); renderHud();
-}
-
-function repair(id) {
-  const p = S.pods.find(x => x.id === id);
-  if (!p || p.state !== 'crashed' || !S.running) return;
-  p.state = 'starting';
-  setTimeout(() => { if (p.state === 'starting') { p.state = 'running'; renderBoard(); } }, 1000);
-  log(`🔧 Tu redémarres <strong>${p.name}</strong>. Bien joué !`);
-  renderBoard();
-}
-
-/* ── SIMULATION ───────────────────────────────────── */
-function tick() {
-  if (!S.running) return;
-  const dt = 0.1;
-  const m = MISSIONS[S.mission];
-  S.t += dt;
-
-  // scripted events
-  let rate = m.rate;
-  if (m.spike) {
-    const on = S.t >= m.spike.at && S.t < m.spike.at + m.spike.duration;
-    if (on) rate = m.spike.rate;
-    if (on && !S.spikeOn) { S.spikeOn = true; log('📺 <strong>Pic de trafic !</strong> Le journal télévisé a parlé de nous. Utilise la recette IaC !'); }
-    if (!on && S.spikeOn && S.t >= m.spike.at) { S.spikeOn = false; log('😮‍💨 Le pic est passé. Le trafic redevient normal.'); }
+function collect(pu) {
+  const i = G.pus.indexOf(pu); if (i < 0) return;
+  G.pus.splice(i, 1); sfx.power(); burst(pu.x, pu.y, '#FFC300', 18);
+  if (pu.type === 'robot') { G.robotT = 9; say('<strong>Robot Kubernetes activé !</strong> Il écrase les bugs et relance les boîtes tout seul pendant 9 secondes. C\'est ce qu\'il fait toute la nuit chez Damien.'); floatText(pu.x, pu.y - 24, '🤖 Robot Kubernetes !', '#FFC300', 20); }
+  if (pu.type === 'iac') {
+    let n = 0; G.boxes.forEach(b => { if (b.state === 'crashed') { b.state = 'deploying'; b.t = 0; b.dur = .4; n++; } });
+    G.bugs.filter(b => b.state === 'land').forEach(b => squash(b, true));
+    addScore(50);
+    say('<strong>Recette IaC appliquée !</strong> ' + (n ? n + ' boîte' + (n > 1 ? 's' : '') + ' relancée' + (n > 1 ? 's' : '') + ' d\'un coup.' : 'Toutes les boîtes sont nettoyées.') + ' Une seule recette, tout se reconstruit.');
+    floatText(pu.x, pu.y - 24, '📜 Recette IaC ! +50', '#FFC300', 20);
   }
-  if (m.nodeFail) {
-    const nf = m.nodeFail;
-    if (S.t >= nf.at && S.t < nf.at + nf.duration && S.nodeDown < 0) {
-      S.nodeDown = nf.node;
-      const lost = S.pods.filter(p => p.node === nf.node);
-      S.pods = S.pods.filter(p => p.node !== nf.node);
-      log(`⚡ <strong>${NODES[nf.node]} est tombé !</strong> ${lost.length} conteneur${lost.length > 1 ? 's' : ''} perdu${lost.length > 1 ? 's' : ''}. Kubernetes les recrée ailleurs…`);
-      setTimeout(() => {
-        if (!S.running) return;
-        let n = 0;
-        for (let i = 0; i < lost.length; i++) { const node = pickNode(); if (node < 0) break; addPod(node); n++; }
-        log(n === lost.length
-          ? `🤖 Kubernetes a <strong>recréé les ${n} conteneurs</strong> sur les serveurs restants. Personne n'a rien vu !`
-          : `🤖 Kubernetes a recréé ${n} conteneur${n > 1 ? 's' : ''} — <strong>pas assez de place</strong> pour les autres. Il faut anticiper la capacité !`);
-        renderBoard();
-      }, 2200);
-      renderBoard();
-    }
-    if (S.t >= nf.at + nf.duration && S.nodeDown >= 0) {
-      S.nodeDown = -1;
-      log(`🔌 <strong>${NODES[nf.node]} est de retour.</strong> Kubernetes peut à nouveau l'utiliser.`);
-      renderBoard();
-    }
-  }
+  if (pu.type === 'shield') { G.shieldT = 7; say('<strong>Bouclier de sécurité !</strong> Les bugs rebondissent pendant 7 secondes.'); floatText(pu.x, pu.y - 24, '🛡️ Bouclier !', '#FFC300', 20); }
+}
 
-  // arrivals & service
-  S.queue += rate * dt;
-  const running = S.pods.filter(p => p.state === 'running').length;
-  const cap = running * POD_RATE * dt;
-  const servedNow = Math.min(S.queue, cap);
-  S.queue -= servedNow;
-  S.served += servedNow;
-  S.coins += servedNow * COIN_PER_USER;
+/* ═══════════════ INPUT ═══════════════ */
+function tap(px, py) {
+  if (!G.running) return;
+  const r = cv.getBoundingClientRect();
+  const x = (px - r.left) * W / r.width, y = (py - r.top) * H / r.height;
+  const hit = (ox, oy, rad) => (x - ox) ** 2 + (y - oy) ** 2 < rad * rad;
+  const pu = G.pus.find(p => hit(p.x, p.y, 34)); if (pu) return collect(pu);
+  const bug = G.bugs.slice().sort((a, b) => ((a.x - x) ** 2 + (a.y - y) ** 2) - ((b.x - x) ** 2 + (b.y - y) ** 2)).find(b => hit(b.x, b.y, 34));
+  if (bug) { if (bug.state === 'fly') { addScore(5); floatText(bug.x, bug.y - 16, 'En vol ! +5', '#FFC300', 14); } return squash(bug); }
+  const box = G.boxes.find(b => { const c = boxCenter(b); return Math.abs(x - c.x) < boxW / 2 + 8 && Math.abs(y - c.y) < boxH / 2 + 8; });
+  if (box && box.state === 'crashed') return deployBox(box);
+  if (box && box.state === 'down') { floatText(x, y - 10, 'Serveur en panne…', '#FF5C38', 14); return; }
+  G.combo = 1; G.comboT = 0; $('h-combo').textContent = '×1';
+  burst(x, y, 'rgba(255,255,255,.5)', 5, 90);
+}
+cv.addEventListener('pointerdown', e => { e.preventDefault(); tap(e.clientX, e.clientY); });
+$('btn-start').onclick = start;
+$('btn-again').onclick = start;
+window.addEventListener('resize', resize);
 
-  // satisfaction
-  if (S.queue > 4) S.sat -= (S.queue - 4) * 0.9 * dt;
-  else S.sat = Math.min(100, S.sat + 4 * dt);
+/* ═══════════════ UPDATE ═══════════════ */
+function update(dt) {
+  G.t += dt;
+  G.parts.forEach(p => { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 500 * dt; p.life -= dt; });
+  G.parts = G.parts.filter(p => p.life > 0);
+  G.floats.forEach(f => { f.y -= 40 * dt; f.life -= dt * .9; });
+  G.floats = G.floats.filter(f => f.life > 0);
+  if (G.banner) { G.banner.life -= dt; if (G.banner.life <= 0) G.banner = null; }
+  if (!G.running) return;
 
-  // crashes
-  if (m.crash > 0) {
-    S.pods.forEach(p => {
-      if (p.state === 'running' && Math.random() < m.crash) {
-        p.state = 'crashed';
-        if (S.autoheal) {
-          setTimeout(() => { if (p.state === 'crashed' && S.running) { p.state = 'starting'; renderBoard();
-            setTimeout(() => { if (p.state === 'starting') { p.state = 'running'; renderBoard(); } }, 900); } }, 1400);
-          log(`🤖 <strong>${p.name}</strong> a planté — Kubernetes le redémarre automatiquement.`);
-        } else {
-          log(`🔥 <strong>${p.name}</strong> vient de planter ! Clique dessus pour le réparer.`);
-        }
-        renderBoard();
+  // waves
+  if (G.between > 0) { G.between -= dt; if (G.between <= 0) startWave(); }
+  else {
+    G.waveT += dt;
+    if (G.waveT >= WAVE_DUR) { endWave(); }
+    G.bugT -= dt; if (G.bugT <= 0) { spawnBug(); G.bugT = bugInterval() * (0.7 + Math.random() * .6); }
+    // scripted events
+    if (!G.eventDone && G.wave >= 2 && G.waveT > 9) {
+      G.eventDone = true;
+      if (G.wave >= 3 && G.wave % 2 === 1) {
+        const col = Math.floor(Math.random() * COLS);
+        G.fail = { col, t: 0 };
+        G.boxes.filter(b => b.c === col).forEach(b => { b.state = 'down'; b.t = 0; });
+        G.bugs = G.bugs.filter(b => b.box.c !== col);
+        sfx.crash(); shake();
+        G.banner = { text: '⚡ ' + SERVER_NAMES[col] + ' en panne !', sub: 'Kubernetes recrée les boîtes ailleurs…', life: 3 };
+        say('<strong>Un serveur entier s\'est éteint !</strong> Regarde : Kubernetes va relancer ses boîtes tout seul dans 3 secondes.');
+      } else {
+        G.spikeT = 8; sfx.wave();
+        G.banner = { text: '📺 Pic de trafic !', sub: 'Tout le monde arrive en même temps !', life: 3 };
+        say('<strong>Pic de trafic !</strong> Le journal télévisé a parlé de nous. Garde un max de boîtes en vie !');
       }
-    });
+    }
+  }
+  if (G.spikeT > 0) G.spikeT -= dt;
+  if (G.fail) {
+    G.fail.t += dt;
+    if (G.fail.t > 3) {
+      G.boxes.filter(b => b.c === G.fail.col).forEach(b => { b.state = 'deploying'; b.t = 0; b.dur = .8; });
+      floatText(PAD + cellW * (G.fail.col + .5), TOP + cellH * ROWS / 2, '🤖 Boîtes recréées !', '#9AE6FF', 20);
+      sfx.deploy(); G.fail = null;
+    }
   }
 
-  renderHud(); renderQueue();
+  // combo decay
+  if (G.comboT > 0) { G.comboT -= dt; if (G.comboT <= 0 && G.combo > 1) { G.combo = 1; $('h-combo').textContent = '×1'; } }
 
-  if (S.sat <= 0) { S.sat = 0; renderHud(); return fail(); }
-  if (S.served >= m.goal) return win();
-}
+  // powerups
+  G.puT -= dt; if (G.puT <= 0) { spawnPU(); G.puT = 11 + Math.random() * 5; }
+  G.pus.forEach(p => { p.x += p.vx * dt; p.ph += dt; p.y += Math.sin(p.ph * 2) * 18 * dt; p.life -= dt; });
+  G.pus = G.pus.filter(p => p.life > 0 && p.x > -60 && p.x < W + 60);
+  if (G.shieldT > 0) G.shieldT -= dt;
+  if (G.robotT > 0) {
+    G.robotT -= dt; G.robotZap -= dt;
+    if (G.robotZap <= 0) {
+      const target = G.bugs.find(b => b.state === 'land') || G.bugs[0];
+      const crashed = G.boxes.find(b => b.state === 'crashed');
+      if (target) { G.zapLine = { x: target.x, y: target.y, life: .2 }; squash(target, true); G.robotZap = .45; }
+      else if (crashed) { deployBox(crashed, true); G.robotZap = .45; }
+      else G.robotZap = .2;
+    }
+  }
+  if (G.zapLine) { G.zapLine.life -= dt; if (G.zapLine.life <= 0) G.zapLine = null; }
 
-/* ── FLOW ─────────────────────────────────────────── */
-function startMission(i) {
-  S.mission = i; S.t = 0; S.served = 0; S.queue = 0; S.spikeOn = false; S.nodeDown = -1;
-  S.sat = Math.max(S.sat, 70);
-  const m = MISSIONS[i];
-  if (m.unlock === 'autoheal') S.autoheal = true;
-  if (m.unlock === 'scale') S.scaleUnlocked = true;
-  renderMissions(); renderBoard(); renderHud(); renderQueue();
-  showModal({
-    kicker: `Mission ${i + 1} / 5`, title: m.title,
-    body: m.intro,
-    goal: `🎯 Objectif : servir ${m.goal} utilisateurs sans que la satisfaction tombe à zéro.`,
-    actions: [{ label: 'C\'est parti !', cls: 'btn-p', fn: () => { closeModal(); run(); } }]
+  // boxes
+  G.boxes.forEach(b => {
+    b.t += dt;
+    if (b.state === 'deploying' && b.t >= (b.dur || 1)) { b.state = 'ok'; b.t = 0; const c = boxCenter(b); burst(c.x, c.y, b.color, 10, 140); sfx.pop(); }
   });
-}
 
-function run() {
-  S.running = true;
-  log(S.mission === 0 ? '👋 Les premiers utilisateurs arrivent. Déploie une appli !' : '▶️ Mission lancée !');
-  clearInterval(S.timer);
-  S.timer = setInterval(tick, 100);
-  renderHud();
-}
-
-function stop() { S.running = false; clearInterval(S.timer); renderHud(); }
-
-function win() {
-  stop();
-  const m = MISSIONS[S.mission];
-  S.coins += 15;
-  confetti();
-  const last = S.mission === MISSIONS.length - 1;
-  showModal({
-    kicker: last ? '🏆 Journée terminée' : `Mission ${S.mission + 1} réussie`,
-    title: last ? 'Tu as fait le métier de Damien !' : 'Bravo !',
-    body: last ? {
-      ad: `Tu as déployé des conteneurs, survécu aux pannes, absorbé un pic de trafic et perdu un serveur sans que les utilisateurs ne s'en aperçoivent. C'est ça, être responsable d'une infrastructure Kubernetes — sauf que Damien le fait avec des centaines de serveurs et des milliers de conteneurs.`,
-      ca: `Tu as mis des boîtes magiques partout, réparé les pannes, résisté à la foule et même survécu à un serveur éteint ! C'est exactement le travail de Damien — sauf qu'il le fait avec des milliers de boîtes. 🎉`
-    } : { ad: `${m.goal} utilisateurs servis. +15 💰 de bonus.`, ca: `${m.goal} personnes contentes ! Tu gagnes 15 pièces en bonus. 💰` },
-    learn: m.learn,
-    actions: last
-      ? [{ label: '🔄 Rejouer', cls: 'btn-p', fn: () => location.reload() }, { label: '← Retour au site', cls: 'btn-o', fn: () => location.href = 'index.html' }]
-      : [{ label: 'Mission suivante →', cls: 'btn-p', fn: () => { closeModal(); startMission(S.mission + 1); } }]
+  // bugs
+  G.bugs.forEach(bug => {
+    bug.t += dt; bug.wig += dt * 12;
+    if (bug.state === 'fly') {
+      const k = Math.min(1, bug.t / bug.dur), e = 1 - Math.pow(1 - k, 3);
+      bug.x = bug.sx + (bug.tx - bug.sx) * e; bug.y = bug.sy + (bug.ty - bug.sy) * e - Math.sin(k * Math.PI) * 60;
+      if (k >= 1) {
+        if (bug.box.state !== 'ok') { bug.state = 'flee'; bug.t = 0; return; }
+        if (G.shieldT > 0) { bug.state = 'flee'; bug.t = 0; sfx.boing(); floatText(bug.x, bug.y - 16, 'Boing !', '#9AE6FF', 14); return; }
+        bug.state = 'land'; bug.land = 0; bug.box.state = 'bug';
+      }
+    } else if (bug.state === 'land') {
+      bug.land += dt; bug.y = bug.ty + Math.abs(Math.sin(bug.wig * .5)) * -4;
+      if (bug.land >= landTime()) { crashBox(bug.box); bug.state = 'flee'; bug.t = 0; bug.box = null; }
+    } else if (bug.state === 'flee') {
+      bug.y -= 260 * dt; bug.x += Math.sin(bug.wig) * 40 * dt;
+    }
   });
-}
+  G.bugs = G.bugs.filter(b => !(b.state === 'flee' && b.t > 1.2));
 
-function fail() {
-  stop();
-  showModal({
-    fail: true, kicker: 'Oups', title: 'Les utilisateurs sont partis…',
-    body: {
-      ad: 'La file d\'attente a trop grossi et la satisfaction est tombée à zéro. Astuce : déploie plus tôt, et garde toujours une marge de capacité pour les imprévus.',
-      ca: 'Trop de gens attendaient et ils sont partis fâchés. Astuce : mets plus de boîtes, et garde toujours une place libre pour les surprises !'
-    },
-    goal: '💡 Ça arrive aussi aux vrais ingénieurs. On recommence !',
-    actions: [{ label: '🔄 Réessayer la mission', cls: 'btn-p', fn: () => { S.coins = Math.max(S.coins, 30); S.sat = 100; S.pods.forEach(p => p.state = 'running'); closeModal(); startMission(S.mission); } }]
+  // users
+  G.userT -= dt; if (G.userT <= 0) { spawnUser(); G.userT = userInterval() * (0.7 + Math.random() * .6); }
+  const ratio = okRatio();
+  G.users.forEach(u => {
+    u.x += u.v * dt; u.bob += dt * 10;
+    if (u.mood === 'walk' && u.x > W - 40) {
+      if (Math.random() < ratio * 1.15) { u.mood = 'happy'; G.served++; addScore(5); burst(u.x, u.y - 10, '#FFC300', 4, 80); }
+      else { u.mood = 'angry'; floatText(u.x - 20, u.y - 30, '😡 -1 vie', '#FF5C38', 16); loseLife(); }
+      u.t = 0;
+    }
+    if (u.mood !== 'walk') { u.t += dt; u.y -= (u.mood === 'happy' ? 50 : 20) * dt; }
   });
+  G.users = G.users.filter(u => !(u.mood !== 'walk' && u.t > .6));
+  $('powers').innerHTML =
+    (G.robotT > 0 ? `<span class="pw" style="background:#3A6FF7">🤖 Robot <i><b style="width:${G.robotT / 9 * 100}%"></b></i></span>` : '') +
+    (G.shieldT > 0 ? `<span class="pw" style="background:#0FA3B1">🛡️ Bouclier <i><b style="width:${G.shieldT / 7 * 100}%"></b></i></span>` : '') +
+    (G.spikeT > 0 ? `<span class="pw" style="background:#FF5C38">📺 Pic de trafic <i><b style="width:${G.spikeT / 8 * 100}%"></b></i></span>` : '');
 }
 
-/* ── MODAL ────────────────────────────────────────── */
-function showModal(o) {
-  const el = $('modal');
-  el.className = 'modal' + (o.fail ? ' fail' : '');
-  el.innerHTML = `
-    <div class="kicker">${o.kicker}</div>
-    <h2>${o.title}</h2>
-    <p><span class="ad">${o.body.ad}</span><span class="ca">${o.body.ca}</span></p>
-    ${o.goal ? `<div class="goal">${o.goal}</div>` : ''}
-    ${o.learn ? `<div class="learn"><b>Ce que tu viens d'apprendre</b><span class="ad">${o.learn.ad}</span><span class="ca">${o.learn.ca}</span></div>` : ''}
-    <div class="actions">${o.actions.map((a, i) => `<button class="btn ${a.cls}" data-i="${i}">${a.label}</button>`).join('')}</div>`;
-  el.querySelectorAll('.actions button').forEach(b => b.onclick = o.actions[+b.dataset.i].fn);
-  $('modal-bg').classList.add('open');
+/* ═══════════════ DRAW ═══════════════ */
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); }
+function face(x, y, s, mood, blink) {
+  // eyes
+  const ey = y - s * .08, ex = s * .22;
+  ctx.fillStyle = '#fff';
+  if (blink) { ctx.fillRect(x - ex - s * .12, ey, s * .24, 3); ctx.fillRect(x + ex - s * .12, ey, s * .24, 3); }
+  else {
+    ctx.beginPath(); ctx.arc(x - ex, ey, s * .13, 0, 7); ctx.arc(x + ex, ey, s * .13, 0, 7); ctx.fill();
+    ctx.fillStyle = '#1B1B2F';
+    const px = mood === 'sad' ? 0 : s * .03;
+    ctx.beginPath(); ctx.arc(x - ex + px, ey + s * .02, s * .06, 0, 7); ctx.arc(x + ex + px, ey + s * .02, s * .06, 0, 7); ctx.fill();
+  }
+  ctx.strokeStyle = '#1B1B2F'; ctx.lineWidth = Math.max(2, s * .05); ctx.lineCap = 'round';
+  ctx.beginPath();
+  if (mood === 'happy') ctx.arc(x, y + s * .12, s * .2, .15 * Math.PI, .85 * Math.PI);
+  else if (mood === 'sad') ctx.arc(x, y + s * .38, s * .2, 1.2 * Math.PI, 1.8 * Math.PI);
+  else { ctx.moveTo(x - s * .15, y + s * .25); ctx.lineTo(x + s * .15, y + s * .25); }
+  ctx.stroke();
 }
-function closeModal() { $('modal-bg').classList.remove('open'); }
+function drawBox(b) {
+  const { x, y } = boxCenter(b);
+  const wob = b.state === 'ok' ? Math.sin(G.t * 3 + b.c * 1.3 + b.r * .7) * 2 : 0;
+  const blink = ((G.t + b.blink) % 4) < .12;
+  ctx.save(); ctx.translate(x, y + wob);
+  if (b.state === 'bug') ctx.translate(Math.sin(G.t * 40) * 2, 0);
+  const w = boxW, h = boxH;
+  if (b.state === 'crashed' || b.state === 'down') {
+    ctx.fillStyle = b.state === 'down' ? '#2A2F45' : '#4A4A5A'; rr(-w / 2, -h / 2, w, h, 10); ctx.fill();
+    ctx.strokeStyle = '#1B1B2F'; ctx.lineWidth = 3; ctx.beginPath();
+    ctx.moveTo(-w * .3, -h / 2); ctx.lineTo(-w * .1, -h * .1); ctx.lineTo(-w * .25, h * .2); ctx.lineTo(0, h / 2);
+    ctx.moveTo(w * .2, -h / 2); ctx.lineTo(w * .3, 0); ctx.lineTo(w * .1, h / 2); ctx.stroke();
+    // X eyes
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; const s = h * .9, ex = s * .22, ey = -s * .08;
+    [-ex, ex].forEach(dx => { ctx.beginPath(); ctx.moveTo(dx - 5, ey - 5); ctx.lineTo(dx + 5, ey + 5); ctx.moveTo(dx + 5, ey - 5); ctx.lineTo(dx - 5, ey + 5); ctx.stroke(); });
+    ctx.beginPath(); ctx.arc(0, s * .3, s * .1, 0, 7); ctx.stroke();
+    if (b.state === 'crashed') {
+      const pulse = .6 + Math.sin(G.t * 6) * .4;
+      ctx.fillStyle = `rgba(255,255,255,${.85 * pulse})`; ctx.font = `800 ${Math.round(h * .28)}px 'Baloo 2', sans-serif`; ctx.textAlign = 'center';
+      ctx.fillText('TAPE !', 0, h / 2 + h * .32);
+      ctx.strokeStyle = `rgba(255,92,56,${pulse})`; ctx.lineWidth = 3; rr(-w / 2 - 4, -h / 2 - 4, w + 8, h + 8, 13); ctx.stroke();
+    } else {
+      ctx.fillStyle = '#FFC300'; ctx.font = `${Math.round(h * .5)}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText('⚡', 0, h * .18);
+    }
+  } else if (b.state === 'deploying') {
+    const k = Math.min(1, b.t / (b.dur || 1));
+    ctx.strokeStyle = b.color; ctx.lineWidth = 3; ctx.setLineDash([6, 5]); rr(-w / 2, -h / 2, w, h, 10); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = b.color; ctx.globalAlpha = .35; rr(-w / 2, h / 2 - h * k, w, h * k, 10); ctx.fill(); ctx.globalAlpha = 1;
+    ctx.fillStyle = '#fff'; ctx.font = `800 ${Math.round(h * .3)}px 'Baloo 2', sans-serif`; ctx.textAlign = 'center'; ctx.fillText(Math.round(k * 100) + '%', 0, h * .1);
+  } else {
+    ctx.fillStyle = b.color; rr(-w / 2, -h / 2, w, h, 10); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.18)'; rr(-w / 2, -h / 2, w, h * .28, [10, 10, 0, 0]); ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,.18)'; ctx.lineWidth = 2;
+    for (let i = 1; i < 4; i++) { ctx.beginPath(); ctx.moveTo(-w / 2 + w * i / 4, -h / 2 + 4); ctx.lineTo(-w / 2 + w * i / 4, -h / 2 + h * .2); ctx.stroke(); }
+    face(0, h * .08, h * .9, b.state === 'bug' ? 'sad' : 'happy', blink);
+  }
+  ctx.restore();
+}
+function drawBug(bug) {
+  ctx.save(); ctx.translate(bug.x, bug.y);
+  const s = 15, wig = Math.sin(bug.wig) * .3;
+  if (bug.state === 'land') {
+    const k = bug.land / landTime();
+    ctx.strokeStyle = `rgba(255,${Math.round(200 - k * 170)},60,.9)`; ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.arc(0, 0, s + 12, -Math.PI / 2, -Math.PI / 2 + k * Math.PI * 2); ctx.stroke();
+  }
+  ctx.strokeStyle = '#3E7A00'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+  for (let i = -1; i <= 1; i++) { const a = wig * (i % 2 ? 1 : -1);
+    ctx.beginPath(); ctx.moveTo(-s * .6, i * 6); ctx.lineTo(-s * 1.2, i * 6 + 6 * a - 4); ctx.moveTo(s * .6, i * 6); ctx.lineTo(s * 1.2, i * 6 - 6 * a - 4); ctx.stroke(); }
+  ctx.fillStyle = '#7CD600'; ctx.beginPath(); ctx.ellipse(0, 2, s * .85, s, 0, 0, 7); ctx.fill();
+  ctx.strokeStyle = '#3E7A00'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, -s * .5); ctx.lineTo(0, s); ctx.stroke();
+  ctx.fillStyle = '#5DA300'; ctx.beginPath(); ctx.arc(0, -s * .75, s * .6, 0, 7); ctx.fill();
+  ctx.strokeStyle = '#3E7A00'; ctx.beginPath(); ctx.moveTo(-4, -s * 1.2); ctx.lineTo(-9, -s * 1.8); ctx.moveTo(4, -s * 1.2); ctx.lineTo(9, -s * 1.8); ctx.stroke();
+  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(-5, -s * .8, 4, 0, 7); ctx.arc(5, -s * .8, 4, 0, 7); ctx.fill();
+  ctx.fillStyle = '#1B1B2F'; ctx.beginPath(); ctx.arc(-4, -s * .8, 2, 0, 7); ctx.arc(6, -s * .8, 2, 0, 7); ctx.fill();
+  ctx.restore();
+}
+function drawUser(u) {
+  ctx.save(); ctx.translate(u.x, u.y + Math.abs(Math.sin(u.bob)) * -3);
+  ctx.fillStyle = u.shirt; rr(-7, 0, 14, 16, 4); ctx.fill();
+  ctx.fillStyle = u.skin; ctx.beginPath(); ctx.arc(0, -8, 9, 0, 7); ctx.fill();
+  ctx.fillStyle = '#1B1B2F'; ctx.beginPath(); ctx.arc(-3, -9, 1.4, 0, 7); ctx.arc(3, -9, 1.4, 0, 7); ctx.fill();
+  ctx.strokeStyle = '#1B1B2F'; ctx.lineWidth = 1.5; ctx.beginPath();
+  if (u.mood === 'angry') ctx.arc(0, -2, 3, 1.15 * Math.PI, 1.85 * Math.PI);
+  else if (u.mood === 'happy') ctx.arc(0, -6, 4, .1 * Math.PI, .9 * Math.PI);
+  else ctx.arc(0, -6, 3, .2 * Math.PI, .8 * Math.PI);
+  ctx.stroke();
+  if (u.mood === 'happy') { ctx.font = '12px sans-serif'; ctx.fillText('✨', 8, -14); }
+  ctx.restore();
+}
+function drawPU(p) {
+  ctx.save(); ctx.translate(p.x, p.y);
+  const pulse = 1 + Math.sin(p.ph * 5) * .08;
+  ctx.scale(pulse, pulse);
+  ctx.fillStyle = 'rgba(255,195,0,.25)'; ctx.beginPath(); ctx.arc(0, 0, 30, 0, 7); ctx.fill();
+  ctx.strokeStyle = '#FFC300'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, 26, 0, 7); ctx.stroke();
+  ctx.font = '28px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(p.type === 'robot' ? '🤖' : p.type === 'iac' ? '📜' : '🛡️', 0, 2);
+  ctx.restore();
+}
+function drawRobot() {
+  const x = W - 46, y = TOP - 4, a = G.robotT > 0;
+  ctx.save(); ctx.translate(x, y);
+  if (a) ctx.translate(Math.sin(G.t * 8) * 3, Math.sin(G.t * 5) * 3);
+  ctx.fillStyle = a ? '#3A6FF7' : '#3A4060'; rr(-16, -14, 32, 28, 8); ctx.fill();
+  ctx.fillStyle = a ? '#9AE6FF' : '#555'; ctx.beginPath(); ctx.arc(-6, -3, 4, 0, 7); ctx.arc(6, -3, 4, 0, 7); ctx.fill();
+  ctx.strokeStyle = a ? '#9AE6FF' : '#555'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-6, 6); ctx.lineTo(6, 6); ctx.moveTo(0, -14); ctx.lineTo(0, -22); ctx.stroke();
+  ctx.fillStyle = a ? '#FFC300' : '#555'; ctx.beginPath(); ctx.arc(0, -24, 3, 0, 7); ctx.fill();
+  ctx.restore();
+  if (G.zapLine && a) { ctx.strokeStyle = 'rgba(154,230,255,.9)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(G.zapLine.x, G.zapLine.y); ctx.stroke(); }
+}
+function draw() {
+  // background
+  const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#141C3A'); g.addColorStop(1, '#0B1024');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(255,255,255,.04)'; ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+  // racks
+  for (let c = 0; c < COLS; c++) {
+    const x = PAD + cellW * c + 4, down = G.fail && G.fail.col === c;
+    ctx.fillStyle = down ? 'rgba(255,92,56,.12)' : 'rgba(255,255,255,.05)';
+    rr(x, TOP - 6, cellW - 8, cellH * ROWS + 6, 12); ctx.fill();
+    ctx.fillStyle = down ? '#FF5C38' : 'rgba(255,255,255,.45)'; ctx.font = `700 12px 'Nunito', sans-serif`; ctx.textAlign = 'left';
+    ctx.fillText((down ? '⚡ ' : '🖥️ ') + SERVER_NAMES[c], x + 8, TOP - 14);
+  }
+  // shield
+  if (G.shieldT > 0) { ctx.strokeStyle = `rgba(15,163,177,${.5 + Math.sin(G.t * 6) * .3})`; ctx.lineWidth = 4; rr(PAD - 2, TOP - 12, W - PAD * 2 + 4, cellH * ROWS + 16, 16); ctx.stroke(); }
+  // lane
+  ctx.fillStyle = 'rgba(255,255,255,.06)'; ctx.fillRect(0, H - LANE, W, LANE);
+  ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.font = `700 11px 'Nunito', sans-serif`; ctx.textAlign = 'left';
+  ctx.fillText('UTILISATEURS →', 10, H - LANE + 14);
+  ctx.fillStyle = '#FFC300'; ctx.font = '18px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('🏦', W - 18, H - LANE / 2 + 6);
+  if (G.spikeT > 0) { ctx.fillStyle = `rgba(255,92,56,${.15 + Math.sin(G.t * 10) * .1})`; ctx.fillRect(0, H - LANE, W, LANE); }
 
-function confetti() {
-  const c = $('confetti');
-  const cols = ['#3A6FF7', '#FFC300', '#FF5C38', '#7B2FBE', '#1DB660', '#0FA3B1'];
-  c.innerHTML = Array.from({ length: 70 }, () =>
-    `<i style="left:${Math.random() * 100}%;background:${cols[Math.floor(Math.random() * cols.length)]};animation-duration:${1.8 + Math.random() * 1.6}s;animation-delay:${Math.random() * .4}s"></i>`).join('');
-  setTimeout(() => c.innerHTML = '', 3800);
+  G.boxes.forEach(drawBox);
+  G.users.forEach(drawUser);
+  G.bugs.forEach(drawBug);
+  G.pus.forEach(drawPU);
+  drawRobot();
+  G.parts.forEach(p => { ctx.globalAlpha = Math.max(0, Math.min(1, p.life * 1.5)); ctx.fillStyle = p.col; ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size); });
+  ctx.globalAlpha = 1;
+  G.floats.forEach(f => { ctx.globalAlpha = Math.max(0, f.life); ctx.fillStyle = f.col; ctx.font = `800 ${f.size}px 'Baloo 2', sans-serif`; ctx.textAlign = 'center'; ctx.strokeStyle = 'rgba(0,0,0,.5)'; ctx.lineWidth = 3; ctx.strokeText(f.text, f.x, f.y); ctx.fillText(f.text, f.x, f.y); });
+  ctx.globalAlpha = 1;
+
+  // wave progress bar
+  if (G.running && G.between <= 0) { ctx.fillStyle = 'rgba(255,255,255,.12)'; ctx.fillRect(0, 0, W, 5); ctx.fillStyle = '#FFC300'; ctx.fillRect(0, 0, W * Math.min(1, G.waveT / WAVE_DUR), 5); }
+
+  if (G.banner) {
+    const a = Math.min(1, G.banner.life * 2, (G.banner.life > 3.5 ? 4 - G.banner.life : 1) * 3);
+    ctx.globalAlpha = Math.max(0, Math.min(1, a));
+    ctx.fillStyle = 'rgba(8,12,30,.7)'; rr(W * .1, H * .34, W * .8, 96, 16); ctx.fill();
+    ctx.fillStyle = '#FFC300'; ctx.font = `900 ${W < 600 ? 30 : 38}px 'Baloo 2', sans-serif`; ctx.textAlign = 'center'; ctx.fillText(G.banner.text, W / 2, H * .34 + 44);
+    ctx.fillStyle = '#fff'; ctx.font = `600 ${W < 600 ? 13 : 15}px 'Nunito', sans-serif`;
+    const sub = G.banner.sub, maxW = W * .76;
+    if (ctx.measureText(sub).width > maxW) { const words = sub.split(' '); let l1 = '', l2 = ''; for (const w of words) { if (!l2 && ctx.measureText(l1 + ' ' + w).width < maxW) l1 += (l1 ? ' ' : '') + w; else l2 += (l2 ? ' ' : '') + w; }
+      ctx.fillText(l1, W / 2, H * .34 + 68); ctx.fillText(l2, W / 2, H * .34 + 86); }
+    else ctx.fillText(sub, W / 2, H * .34 + 72);
+    ctx.globalAlpha = 1;
+  }
 }
 
-/* ── BOOT ─────────────────────────────────────────── */
-renderMissions(); renderBoard(); renderHud(); renderQueue();
-showModal({
-  kicker: 'Jeu', title: 'Mission Kubernetes',
-  body: {
-    ad: 'Tu es Damien. Trois serveurs, une file d\'utilisateurs qui grandit, et des applications à garder en vie. Chaque mission débloque un vrai outil de son métier. Prêt ?',
-    ca: 'Aujourd\'hui, c\'est toi le chef des boîtes magiques ! Il y a 3 serveurs, des gens qui arrivent, et des applis à garder en vie. À chaque mission, tu apprends un secret du métier de Damien. Prêt ?'
-  },
-  goal: '🎮 Une appli sert environ 1 utilisateur par seconde. Si la file d\'attente grossit, la satisfaction baisse.',
-  actions: [{ label: 'Commencer', cls: 'btn-p', fn: () => { closeModal(); startMission(0); } }]
-});
+/* ═══════════════ LOOP ═══════════════ */
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  update(dt); draw();
+  requestAnimationFrame(frame);
+}
+reset(); resize(); requestAnimationFrame(frame);
 </script>
 </body>
 </html>
